@@ -1,6 +1,8 @@
 #import <React/RCTRootView.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
+
+
 #if __has_include(<React/RCTUtilsUIOverride.h>)
     #import <React/RCTUtilsUIOverride.h>
 #endif
@@ -13,6 +15,8 @@ NSExtensionContext* extensionContext;
 
 - (UIView*) shareView
 {
+    
+    
     return nil;
 }
 
@@ -27,17 +31,25 @@ RCT_EXPORT_MODULE();
     [super viewDidLoad];
 
     extensionContext = self.extensionContext;
+     self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegistryProvider:[[UMModuleRegistryProvider alloc] init]];
 
     UIView *rootView = [self shareView];
     if (rootView.backgroundColor == nil) {
         rootView.backgroundColor = [[UIColor alloc] initWithRed:1 green:1 blue:1 alpha:0.1];
     }
 
+
     #if __has_include(<React/RCTUtilsUIOverride.h>)
         [RCTUtilsUIOverride setPresentedViewController:self];
     #endif
-
     self.view = rootView;
+    
+}
+- (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge
+{
+    NSArray<id<RCTBridgeModule>> *extraModules = [_moduleRegistryAdapter extraModulesForBridge:bridge];
+    // If you'd like to export some custom RCTBridgeModules that are not Expo modules, add them here!
+    return extraModules;
 }
 
 RCT_EXPORT_METHOD(openURL:(NSString *)url)
